@@ -1,137 +1,484 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Caminhando na Palavra</title>
   <style>
+    :root{
+      --bg-light:#f3f5ff;
+      --bg-dark:#071226;
+      --card-light:#ffffff;
+      --card-dark:#0b1220;
+      --text-light:#071128;
+      --text-dark:#e6eef6;
+      --accent:#4f46e5;
+      --accent-2:#06b6d4;
+      --muted-light:#6b7280;
+      --muted-dark:#9ca3af;
+      --glass: rgba(255,255,255,0.03);
+      --radius:18px;
+      --maxw:980px;
+    }
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:Arial, sans-serif;
-      background:#f3f5ff;
-      color:#1a1a1a;
-    }
-    .container{
-      max-width:900px;
-      margin:auto;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg-light);
+      color:var(--text-light);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
       padding:20px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    h1{
-      text-align:center;
-      font-size:28px;
-      font-weight:700;
+    body.dark{
+      background:linear-gradient(180deg,#041428 0%, #071226 100%);
+      color:var(--text-dark);
     }
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      margin:0 auto;
+    }
+
+    header.top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 30px rgba(79,70,229,0.12)
+    }
+    h1{font-size:20px;margin:0}
+    .sub{font-size:13px;color:var(--muted-light)}
+    body.dark .sub{color:var(--muted-dark)}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 380px;
+      gap:18px;
+    }
+
+    .panel{
+      background:var(--card-light);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:0 10px 30px rgba(2,6,23,0.06);
+    }
+    body.dark .panel{background:var(--card-dark); box-shadow:0 8px 26px rgba(2,6,23,0.5)}
+
+    .cards{display:flex;flex-direction:column;gap:12px}
     .card{
-      background:#fff;
-      border-radius:14px;
-      padding:18px;
-      margin-top:18px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.08);
-      cursor:pointer;
-      transition:0.2s;
+      display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+      cursor:pointer;border:1px solid rgba(0,0,0,0.02);transition:transform .18s ease,box-shadow .18s ease;
     }
-    .card:hover{
-      transform:scale(1.01);
+    .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(15,23,42,0.08)}
+    .card .title{font-weight:700;font-size:16px}
+    .card .desc{font-size:13px;color:var(--muted-light)}
+    body.dark .card .desc{color:var(--muted-dark)}
+
+    .cta{
+      display:flex;gap:8px;align-items:center;margin-top:14px;
     }
-    .title{
-      font-size:18px;
-      font-weight:600;
+    .btn{
+      padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#7c5cff);color:#fff;font-weight:700;cursor:pointer;
+      box-shadow:0 10px 30px rgba(79,70,229,0.12)
     }
-    #loading{
-      display:none;
+    .btn.ghost{background:transparent;color:inherit;border:1px solid rgba(0,0,0,0.06)}
+    body.dark .btn.ghost{border-color:rgba(255,255,255,0.04)}
+
+    .aside{
+      display:flex;flex-direction:column;gap:12px;
+      position:relative;
+    }
+
+    .panel.small{padding:14px}
+
+    .toggle{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,0.03);cursor:pointer;font-weight:600;
+    }
+    body.dark .toggle{background:rgba(255,255,255,0.03)}
+
+    .loading{
+      display:flex;align-items:center;gap:12px;justify-content:center;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)));
+      margin-top:12px;
+    }
+    .spinner{
+      width:36px;height:36px;border-radius:50%;border:4px solid rgba(255,255,255,0.12);border-top-color:#fff;animation:spin 1s linear infinite;box-shadow:0 6px 20px rgba(0,0,0,0.08)
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .result-view{display:none;flex-direction:column;gap:12px}
+    .result-view.active{display:flex}
+
+    .dev-full{
+      min-height:56vh;display:flex;flex-direction:column;gap:14px;justify-content:center;align-items:center;padding:20px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)));
       text-align:center;
-      margin-top:30px;
-      font-size:18px;
-      font-weight:600;
     }
-    .devocional, .estudo{
-      background:#fff;
-      border-radius:14px;
-      margin-top:18px;
-      padding:18px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    body.dark .dev-full{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+    .dev-full h2{margin:0;font-size:20px}
+    .dev-full p{margin:0;font-size:16px;line-height:1.6;color:var(--muted-light)}
+    body.dark .dev-full p{color:var(--muted-dark)}
+
+    .controls-bottom{display:flex;gap:10px;align-items:center;margin-top:10px}
+    .progress{font-size:13px;color:var(--muted-light)}
+    .nav-btn{
+      padding:14px 18px;border-radius:12px;border:none;background:linear-gradient(90deg,#111827,#4f46e5);color:#fff;font-weight:700;font-size:15px;cursor:pointer;
     }
-    @media(max-width:600px){
-      h1{font-size:24px;}
-      .card{padding:16px;}
+    .nav-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+
+    .save-note{font-size:13px;color:var(--muted-light);margin-top:8px}
+
+    .controls-footer{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px}
+    .small-muted{font-size:13px;color:var(--muted-light)}
+
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr}
+      .aside{order:2}
+      .panel{order:1}
+      .dev-full{min-height:48vh}
+      .logo{width:48px;height:48px;font-size:20px}
     }
   </style>
 </head>
 <body>
-  <div class="container" id="app">
-
-    <h1>Escolha seu Plano</h1>
-
-    <div id="planos">
-      <div class="card" onclick="gerarPlano('Crescimento espiritual')">
-        <div class="title">Crescimento espiritual</div>
-        <div>Desenvolva maturidade cristã por meio das Escrituras.</div>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">📖</div>
+        <div>
+          <h1>Caminhando na Palavra</h1>
+          <div class="sub">Escolha um plano e receba 7 devocionais + 1 estudo semanal</div>
+        </div>
       </div>
-
-      <div class="card" onclick="gerarPlano('Identidade em Cristo')">
-        <div class="title">Identidade em Cristo</div>
-        <div>Descubra quem você é em Cristo à luz da Bíblia.</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="toggle" id="themeToggle">Modo escuro</div>
       </div>
+    </header>
 
-      <div class="card" onclick="gerarPlano('Vida de oração')">
-        <div class="title">Vida de oração</div>
-        <div>Aprofunde sua vida devocional e comunhão com Deus.</div>
-      </div>
+    <div class="grid">
+      <main class="panel">
+        <div id="step-choose">
+          <div style="font-weight:700;margin-bottom:8px">Escolha seu plano</div>
+          <div class="cards" id="cards">
+            <div class="card" data-plan="Crescimento espiritual">
+              <div class="title">Crescimento espiritual</div>
+              <div class="desc">Desenvolva maturidade cristã por meio das Escrituras.</div>
+            </div>
+            <div class="card" data-plan="Identidade em Cristo">
+              <div class="title">Identidade em Cristo</div>
+              <div class="desc">Descubra quem você é em Cristo à luz da Bíblia.</div>
+            </div>
+            <div class="card" data-plan="Vida de oração">
+              <div class="title">Vida de oração</div>
+              <div class="desc">Aprofunde sua comunhão com Deus por meio da oração.</div>
+            </div>
+          </div>
+
+          <div class="cta" style="margin-top:14px">
+            <button class="btn" id="btnStart">Iniciar Plano</button>
+            <button class="btn ghost" id="btnClearData">Limpar dados</button>
+          </div>
+
+          <div class="save-note">Os devocionais serão gerados automaticamente e salvos no seu dispositivo.</div>
+        </div>
+
+        <div id="step-result" class="result-view" aria-hidden="true">
+          <div class="loading" id="loadingBox" style="display:none">
+            <div class="spinner" aria-hidden="true"></div>
+            <div>Gerando seu plano, aguarde...</div>
+          </div>
+
+          <div class="dev-full" id="devFull" style="display:none">
+            <h2 id="devTitle">Devocional</h2>
+            <p id="devText">—</p>
+
+            <div class="controls-bottom" style="width:100%;max-width:720px;display:flex;justify-content:space-between">
+              <div class="progress" id="progressText">1 / 7</div>
+              <div style="display:flex;gap:8px">
+                <button class="nav-btn ghost" id="btnPrev">Anterior</button>
+                <button class="nav-btn" id="btnNext">Próximo Devocional</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="studyCard" style="display:none">
+            <div class="dev-full" style="padding:18px">
+              <h2>📘 Estudo Semanal</h2>
+              <p id="studyText">—</p>
+              <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+                <button class="nav-btn" id="btnFinish">Concluir Plano</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <aside class="aside">
+        <div class="panel small">
+          <div style="font-weight:700">Resumo</div>
+          <div style="margin-top:8px" id="summaryPlan">Nenhum plano selecionado</div>
+          <div class="small-muted" style="margin-top:8px">Status: <span id="status">Pronto</span></div>
+        </div>
+
+        <div class="panel small">
+          <div style="font-weight:700">Progresso</div>
+          <div style="margin-top:10px">
+            <div class="small-muted">Devocionais</div>
+            <div style="height:10px;background:rgba(0,0,0,0.04);border-radius:999px;margin-top:8px;overflow:hidden">
+              <div id="bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2))"></div>
+            </div>
+            <div style="margin-top:8px" id="progressSummary">0 / 7 concluídos</div>
+          </div>
+        </div>
+
+        <div class="panel small">
+          <div style="font-weight:700">Ações</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <button class="btn" id="btnOpenSaved">Abrir plano salvo</button>
+            <button class="btn ghost" id="btnDownloadAll">Baixar devocionais (.txt)</button>
+          </div>
+        </div>
+      </aside>
     </div>
 
-    <div id="loading">⏳ Gerando seu plano...</div>
-
-    <div id="resultado"></div>
-
+    <footer style="margin-top:18px;text-align:center;color:var(--muted-light);font-size:13px">
+      © Caminhando na Palavra
+    </footer>
   </div>
 
-<script>
-const API_URL = "https://caminhando-api-1.onrender.com";
+  <script>
+    const BACKEND = 'https://caminhando-api-1.onrender.com/gerar';
 
-async function gerarPlano(tema){
-  document.getElementById("planos").style.display = "none";
-  document.getElementById("loading").style.display = "block";
+    const bodyEl = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const cards = Array.from(document.querySelectorAll('.card'));
+    const btnStart = document.getElementById('btnStart');
+    const btnClearData = document.getElementById('btnClearData');
+    const summaryPlan = document.getElementById('summaryPlan');
+    const statusEl = document.getElementById('status');
+    const loadingBox = document.getElementById('loadingBox');
+    const stepChoose = document.getElementById('step-choose');
+    const stepResult = document.getElementById('step-result');
+    const devFull = document.getElementById('devFull');
+    const devTitle = document.getElementById('devTitle');
+    const devText = document.getElementById('devText');
+    const progressText = document.getElementById('progressText');
+    const bar = document.getElementById('bar');
+    const progressSummary = document.getElementById('progressSummary');
+    const studyText = document.getElementById('studyText');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnFinish = document.getElementById('btnFinish');
+    const btnOpenSaved = document.getElementById('btnOpenSaved');
+    const btnDownloadAll = document.getElementById('btnDownloadAll');
 
-  const payload = {
-    tema: tema,
-    semanas: 1,
-    instrucoes: "Gerar 7 devocionais diários e 1 estudo semanal baseados na Bíblia NAA, com profundidade espiritual e aplicação prática."
-  };
+    let selectedPlan = null;
+    let devocionais = [];
+    let study = '';
+    let index = 0;
+    let completed = [];
 
-  try{
-    const resposta = await fetch(API_URL + "/gerar",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
+    function applyTheme(pref){
+      if(pref === 'dark' || (pref === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)){
+        bodyEl.classList.add('dark');
+        themeToggle.textContent = 'Modo claro';
+      } else {
+        bodyEl.classList.remove('dark');
+        themeToggle.textContent = 'Modo escuro';
+      }
+    }
+
+    applyTheme('auto');
+    themeToggle.addEventListener('click', ()=> {
+      const dark = bodyEl.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      themeToggle.textContent = dark ? 'Modo claro' : 'Modo escuro';
     });
 
-    const data = await resposta.json();
-    exibirResultado(data);
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme) applyTheme(savedTheme);
 
-  }catch(e){
-    document.getElementById("resultado").innerHTML = `<p>Erro ao gerar plano.</p>`;
-  }
+    cards.forEach(c => c.addEventListener('click', ()=> {
+      cards.forEach(x=>x.style.boxShadow='none'); c.style.boxShadow = '0 18px 40px rgba(49,46,129,0.12)';
+      selectedPlan = c.dataset.plan;
+      summaryPlan.textContent = selectedPlan;
+    }));
 
-  document.getElementById("loading").style.display = "none";
-}
+    btnStart.addEventListener('click', async ()=> {
+      if(!selectedPlan) return alert('Escolha um plano primeiro.');
+      stepChoose.style.display = 'none';
+      stepResult.classList.add('active');
+      loadingBox.style.display = 'flex';
+      statusEl.textContent = 'Gerando...';
 
-function exibirResultado(data){
-  const box = document.getElementById("resultado");
-  box.innerHTML = "";
+      const payload = {
+        tema: selectedPlan,
+        semanas: 1,
+        instrucoes: "Gerar 7 devocionais diários e 1 estudo semanal com base nos evangelhos (NAA). Cada devocional: título curto, 1-3 parágrafos, 1 aplicação prática."
+      };
 
-  const estudo = document.createElement("div");
-  estudo.className = "estudo";
-  estudo.innerHTML = `<h2>Estudo da Semana</h2><p>${data.estudo}</p>`;
-  box.appendChild(estudo);
+      try {
+        const res = await fetch(BACKEND, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
 
-  data.devocionais.forEach((dev, i)=>{
-    const d = document.createElement("div");
-    d.className = "devocional";
-    d.innerHTML = `<h3>Devocional ${i+1}</h3><p>${dev}</p>`;
-    box.appendChild(d);
-  });
-}
-</script>
+        if(!res.ok) throw new Error('Erro servidor');
 
+        const data = await res.json();
+        devocionais = Array.isArray(data.devocionais) ? data.devocionais : (data.devos || []);
+        study = data.estudo || data.study || '';
+        if(!Array.isArray(devocionais) || devocionais.length === 0) throw new Error('Resposta vazia');
+
+        index = 0;
+        completed = [];
+        saveToLocal();
+        showDev(index);
+        statusEl.textContent = 'Gerado';
+      } catch (err) {
+        const fallback = generateLocalFallback(selectedPlan);
+        devocionais = fallback.devocionais;
+        study = fallback.estudo;
+        index = 0;
+        completed = [];
+        saveToLocal();
+        showDev(index);
+        statusEl.textContent = 'Offline (gerado localmente)';
+      } finally {
+        loadingBox.style.display = 'none';
+      }
+    });
+
+    function showDev(i){
+      if(!devocionais[i]) return;
+      devTitle.textContent = `Devocional ${i+1}`;
+      devText.textContent = devocionais[i];
+      progressText.textContent = `${i+1} / ${devocionais.length}`;
+      const done = completed.filter(x=>x===true).length;
+      progressSummary.textContent = `${done} / ${devocionais.length} concluídos`;
+      bar.style.width = `${Math.round((done/devocionais.length)*100)}%`;
+      devFull.style.display = 'flex';
+      studyText.textContent = study || '—';
+      document.getElementById('studyCard').style.display = i >= devocionais.length ? 'block' : 'none';
+      updateNavButtons();
+    }
+
+    function updateNavButtons(){
+      btnPrev.disabled = index <= 0;
+      btnNext.textContent = index < devocionais.length-1 ? 'Próximo Devocional' : 'Abrir Estudo';
+    }
+
+    btnPrev.addEventListener('click', ()=> {
+      if(index <= 0) return;
+      index--;
+      showDev(index);
+      saveToLocal();
+    });
+
+    btnNext.addEventListener('click', ()=> {
+      if(index < devocionais.length-1){
+        index++;
+        showDev(index);
+        saveToLocal();
+      } else {
+        document.getElementById('studyCard').style.display = 'block';
+        devFull.style.display = 'none';
+      }
+    });
+
+    btnFinish.addEventListener('click', ()=> {
+      alert('Parabéns! Plano concluído.');
+      clearPlan();
+    });
+
+    btnClearData.addEventListener('click', ()=> {
+      if(confirm('Remover dados salvos no dispositivo?')) clearPlan();
+    });
+
+    btnOpenSaved.addEventListener('click', ()=> {
+      const p = loadFromLocal();
+      if(!p) return alert('Nenhum plano salvo encontrado.');
+      selectedPlan = p.plan;
+      devocionais = p.devocionais || [];
+      study = p.study || '';
+      index = p.index || 0;
+      completed = p.completed || new Array(devocionais.length).fill(false);
+      summaryPlan.textContent = selectedPlan;
+      stepChoose.style.display = 'none';
+      stepResult.classList.add('active');
+      showDev(index);
+    });
+
+    btnDownloadAll.addEventListener('click', ()=> {
+      if(!devocionais.length) return alert('Nenhum devocional para baixar.');
+      const content = `Plano: ${selectedPlan}\n\nEstudo:\n${study}\n\n` + devocionais.map((d,i)=>`Devocional ${i+1}\n${d}\n\n`).join('');
+      const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${selectedPlan.replace(/\s+/g,'_')}_devocionais.txt`;
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    function saveToLocal(){
+      const obj = { plan: selectedPlan, devocionais, study, index, completed };
+      localStorage.setItem('cnp_plan', JSON.stringify(obj));
+    }
+
+    function loadFromLocal(){
+      const raw = localStorage.getItem('cnp_plan');
+      if(!raw) return null;
+      try { return JSON.parse(raw); } catch(e){ return null; }
+    }
+
+    function clearPlan(){
+      localStorage.removeItem('cnp_plan');
+      selectedPlan = null;
+      devocionais = [];
+      study = '';
+      index = 0;
+      completed = [];
+      summaryPlan.textContent = 'Nenhum plano selecionado';
+      statusEl.textContent = 'Pronto';
+      stepResult.classList.remove('active');
+      stepChoose.style.display = 'block';
+      devFull.style.display = 'none';
+      document.getElementById('studyCard').style.display = 'none';
+      bar.style.width = '0%';
+      progressSummary.textContent = `0 / 0 concluídos`;
+    }
+
+    function loadIfExists(){
+      const p = loadFromLocal();
+      if(p && p.devocionais && p.devocionais.length){
+        selectedPlan = p.plan;
+        devocionais = p.devocionais;
+        study = p.study;
+        index = p.index || 0;
+        completed = p.completed || new Array(devocionais.length).fill(false);
+        summaryPlan.textContent = selectedPlan;
+        statusEl.textContent = 'Plano salvo';
+      }
+    }
+
+    function generateLocalFallback(planName){
+      const devs = [];
+      for(let i=0;i<7;i++){
+        devs.push(`${planName} — reflexão ${i+1}. Uma breve meditação e aplicação prática para hoje.`);
+      }
+      return { devocionais: devs, estudio:'Estudo breve sobre ' + planName, estudo: 'Estudo breve sobre ' + planName};
+    }
+
+    loadIfExists();
+  </script>
 </body>
 </html>
