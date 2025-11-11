@@ -77,6 +77,7 @@
     .card{
       display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
       cursor:pointer;border:1px solid rgba(0,0,0,0.02);transition:transform .18s ease,box-shadow .18s ease;
+      user-select:none;
     }
     .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(15,23,42,0.08)}
     .card .title{font-weight:700;font-size:16px}
@@ -106,7 +107,7 @@
     body.dark .toggle{background:rgba(255,255,255,0.03)}
 
     .loading{
-      display:flex;align-items:center;gap:12px;justify-content:center;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)));
+      display:flex;align-items:center;gap:12px;justify-content:center;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
       margin-top:12px;
     }
     .spinner{
@@ -118,7 +119,7 @@
     .result-view.active{display:flex}
 
     .dev-full{
-      min-height:56vh;display:flex;flex-direction:column;gap:14px;justify-content:center;align-items:center;padding:20px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)));
+      min-height:56vh;display:flex;flex-direction:column;gap:14px;justify-content:center;align-items:center;padding:20px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       text-align:center;
     }
     body.dark .dev-full{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
@@ -152,39 +153,39 @@
   <div class="wrap">
     <header class="top">
       <div class="brand">
-        <div class="logo">📖</div>
+        <div class="logo" aria-hidden="true">📖</div>
         <div>
           <h1>Caminhando na Palavra</h1>
           <div class="sub">Escolha um plano e receba 7 devocionais + 1 estudo semanal</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <div class="toggle" id="themeToggle">Modo escuro</div>
+        <button class="toggle" id="themeToggle" type="button">Modo escuro</button>
       </div>
     </header>
 
     <div class="grid">
-      <main class="panel">
+      <main class="panel" aria-live="polite">
         <div id="step-choose">
           <div style="font-weight:700;margin-bottom:8px">Escolha seu plano</div>
-          <div class="cards" id="cards">
-            <div class="card" data-plan="Crescimento espiritual">
+          <div class="cards" id="cards" role="list">
+            <div class="card" data-plan="Crescimento espiritual" role="listitem" tabindex="0">
               <div class="title">Crescimento espiritual</div>
               <div class="desc">Desenvolva maturidade cristã por meio das Escrituras.</div>
             </div>
-            <div class="card" data-plan="Identidade em Cristo">
+            <div class="card" data-plan="Identidade em Cristo" role="listitem" tabindex="0">
               <div class="title">Identidade em Cristo</div>
               <div class="desc">Descubra quem você é em Cristo à luz da Bíblia.</div>
             </div>
-            <div class="card" data-plan="Vida de oração">
+            <div class="card" data-plan="Vida de oração" role="listitem" tabindex="0">
               <div class="title">Vida de oração</div>
               <div class="desc">Aprofunde sua comunhão com Deus por meio da oração.</div>
             </div>
           </div>
 
           <div class="cta" style="margin-top:14px">
-            <button class="btn" id="btnStart">Iniciar Plano</button>
-            <button class="btn ghost" id="btnClearData">Limpar dados</button>
+            <button class="btn" id="btnStart" type="button">Iniciar Plano</button>
+            <button class="btn ghost" id="btnClearData" type="button">Limpar dados</button>
           </div>
 
           <div class="save-note">Os devocionais serão gerados automaticamente e salvos no seu dispositivo.</div>
@@ -203,8 +204,8 @@
             <div class="controls-bottom" style="width:100%;max-width:720px;display:flex;justify-content:space-between">
               <div class="progress" id="progressText">1 / 7</div>
               <div style="display:flex;gap:8px">
-                <button class="nav-btn ghost" id="btnPrev">Anterior</button>
-                <button class="nav-btn" id="btnNext">Próximo Devocional</button>
+                <button class="nav-btn ghost" id="btnPrev" type="button">Anterior</button>
+                <button class="nav-btn" id="btnNext" type="button">Próximo Devocional</button>
               </div>
             </div>
           </div>
@@ -214,7 +215,7 @@
               <h2>📘 Estudo Semanal</h2>
               <p id="studyText">—</p>
               <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
-                <button class="nav-btn" id="btnFinish">Concluir Plano</button>
+                <button class="nav-btn" id="btnFinish" type="button">Concluir Plano</button>
               </div>
             </div>
           </div>
@@ -222,7 +223,7 @@
         </div>
       </main>
 
-      <aside class="aside">
+      <aside class="aside" aria-hidden="false">
         <div class="panel small">
           <div style="font-weight:700">Resumo</div>
           <div style="margin-top:8px" id="summaryPlan">Nenhum plano selecionado</div>
@@ -243,8 +244,8 @@
         <div class="panel small">
           <div style="font-weight:700">Ações</div>
           <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-            <button class="btn" id="btnOpenSaved">Abrir plano salvo</button>
-            <button class="btn ghost" id="btnDownloadAll">Baixar devocionais (.txt)</button>
+            <button class="btn" id="btnOpenSaved" type="button">Abrir plano salvo</button>
+            <button class="btn ghost" id="btnDownloadAll" type="button">Baixar devocionais (.txt)</button>
           </div>
         </div>
       </aside>
@@ -256,124 +257,284 @@
   </div>
 
   <script>
- const BACKEND = "https://caminhando-backend.onrender.com/generate";
+  (function() {
+    // backend endpoint (gera /generate)
+    const BACKEND = "https://caminhando-backend.onrender.com/generate";
 
-/* -------------------------------------
-   DOM ELEMENTS
-------------------------------------- */
-const bodyEl = document.body;
-const themeToggle = document.getElementById('themeToggle');
-const cards = Array.from(document.querySelectorAll('.card'));
-const btnStart = document.getElementById('btnStart');
-const btnClearData = document.getElementById('btnClearData');
-const summaryPlan = document.getElementById('summaryPlan');
-const statusEl = document.getElementById('status');
-const loadingBox = document.getElementById('loadingBox');
-const stepChoose = document.getElementById('step-choose');
-const stepResult = document.getElementById('step-result');
-const devFull = document.getElementById('devFull');
-const devTitle = document.getElementById('devTitle');
-const devText = document.getElementById('devText');
-const progressText = document.getElementById('progressText');
-const bar = document.getElementById('bar');
-const progressSummary = document.getElementById('progressSummary');
-const studyText = document.getElementById('studyText');
-const btnPrev = document.getElementById('btnPrev');
-const btnNext = document.getElementById('btnNext');
-const btnFinish = document.getElementById('btnFinish');
-const btnOpenSaved = document.getElementById('btnOpenSaved');
-const btnDownloadAll = document.getElementById('btnDownloadAll');
+    /* DOM elements */
+    const bodyEl = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const cards = Array.from(document.querySelectorAll('.card'));
+    const btnStart = document.getElementById('btnStart');
+    const btnClearData = document.getElementById('btnClearData');
+    const summaryPlan = document.getElementById('summaryPlan');
+    const statusEl = document.getElementById('status');
+    const loadingBox = document.getElementById('loadingBox');
+    const stepChoose = document.getElementById('step-choose');
+    const stepResult = document.getElementById('step-result');
+    const devFull = document.getElementById('devFull');
+    const devTitle = document.getElementById('devTitle');
+    const devText = document.getElementById('devText');
+    const progressText = document.getElementById('progressText');
+    const bar = document.getElementById('bar');
+    const progressSummary = document.getElementById('progressSummary');
+    const studyText = document.getElementById('studyText');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnFinish = document.getElementById('btnFinish');
+    const btnOpenSaved = document.getElementById('btnOpenSaved');
+    const btnDownloadAll = document.getElementById('btnDownloadAll');
 
-/* -------------------------------------
-   STATE
-------------------------------------- */
-let selectedPlan = null;
-let devocionais = [];
-let study = "";
-let index = 0;
-let completed = [];
+    /* State */
+    let selectedPlan = null;
+    let devocionais = [];
+    let study = "";
+    let index = 0;
+    let completed = [];
 
-/* -------------------------------------
-   THEME
-------------------------------------- */
-function applyTheme(pref) {
-  if (pref === 'dark' || (pref === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    bodyEl.classList.add('dark');
-    themeToggle.textContent = 'Modo claro';
-  } else {
-    bodyEl.classList.remove('dark');
-    themeToggle.textContent = 'Modo escuro';
-  }
-}
+    /* Theme logic */
+    function applyTheme(pref) {
+      if (pref === 'dark' || (pref === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        bodyEl.classList.add('dark');
+        themeToggle.textContent = 'Modo claro';
+      } else {
+        bodyEl.classList.remove('dark');
+        themeToggle.textContent = 'Modo escuro';
+      }
+    }
 
-applyTheme('auto');
+    applyTheme('auto');
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) applyTheme(savedTheme);
 
-themeToggle.addEventListener('click', () => {
-  const dark = bodyEl.classList.toggle('dark');
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
-  themeToggle.textContent = dark ? 'Modo claro' : 'Modo escuro';
-});
-
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) applyTheme(savedTheme);
-
-/* -------------------------------------
-   SELECT PLAN
-------------------------------------- */
-cards.forEach(card =>
-  card.addEventListener('click', () => {
-    cards.forEach(c => (c.style.boxShadow = 'none'));
-    card.style.boxShadow = '0 18px 40px rgba(49,46,129,0.12)';
-    selectedPlan = card.dataset.plan;
-    summaryPlan.textContent = selectedPlan;
-  })
-);
-
-/* -------------------------------------
-   START GENERATION
-------------------------------------- */
-btnStart.addEventListener("click", async () => {
-  if (!selectedPlan) return alert("Escolha um plano primeiro.");
-
-  stepChoose.style.display = "none";
-  stepResult.classList.add("active");
-  loadingBox.style.display = "flex";
-  statusEl.textContent = "Gerando...";
-
-  const payload = {
-    plan: selectedPlan
-  };
-
-  try {
-    const res = await fetch(BACKEND, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+    themeToggle.addEventListener('click', () => {
+      const dark = bodyEl.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      themeToggle.textContent = dark ? 'Modo claro' : 'Modo escuro';
     });
 
-    if (!res.ok) throw new Error("Erro ao conectar no servidor.");
+    /* Select plan handlers (click + keyboard) */
+    cards.forEach(card => {
+      card.addEventListener('click', () => selectCard(card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectCard(card);
+        }
+      });
+    });
 
-    const data = await res.json();
+    function selectCard(card) {
+      cards.forEach(c => c.style.boxShadow = 'none');
+      card.style.boxShadow = '0 18px 40px rgba(49,46,129,0.12)';
+      selectedPlan = card.dataset.plan;
+      summaryPlan.textContent = selectedPlan;
+    }
 
-    devocionais = (data.devocionais || []).map(d => `${d.titulo}\n\n${d.conteudo}`);
-    study = data.estudo_semanal?.conteudo || "";
+    /* Start generation */
+    btnStart.addEventListener('click', async () => {
+      if (!selectedPlan) return alert('Escolha um plano primeiro.');
 
-    if (!devocionais.length) throw new Error("Nenhum devocional retornado.");
+      stepChoose.style.display = 'none';
+      stepResult.classList.add('active');
+      loadingBox.style.display = 'flex';
+      statusEl.textContent = 'Gerando...';
 
-    index = 0;
-    completed = new Array(devocionais.length).fill(false);
+      const payload = {
+        plan: selectedPlan
+      };
 
-    saveToLocal();
-    showDev(index);
-    statusEl.textContent = "Gerado com sucesso ✅";
+      try {
+        const res = await fetch(BACKEND, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-  } catch (err) {
-    console.error(err);
+        if (!res.ok) {
+          const text = await res.text().catch(()=>null);
+          throw new Error('Erro servidor: ' + (text || res.status));
+        }
 
-    // Fallback Local Se Offline
-    const fallback = generateLocalFallback(selectedPlan);
+        const data = await res.json();
 
-</script>
+        // Expected structure: { devocionais: [{titulo, conteudo}, ...], estudo_semanal: {titulo, conteudo} }
+        devocionais = Array.isArray(data.devocionais)
+          ? data.devocionais.map(d => `${d.titulo}\n\n${d.conteudo}`)
+          : (Array.isArray(data.devos) ? data.devos.map(d => `${d.titulo}\n\n${d.conteudo}`) : []);
 
+        study = (data.estudo_semanal && data.estudo_semanal.conteudo) || data.estudo || data.study || '';
+
+        if (!devocionais.length) throw new Error('Nenhum devocional retornado pelo servidor.');
+
+        index = 0;
+        completed = new Array(devocionais.length).fill(false);
+
+        saveToLocal();
+        showDev(index);
+        statusEl.textContent = 'Gerado com sucesso ✅';
+
+      } catch (err) {
+        console.error('Erro na geração:', err);
+
+        // Fallback local (offline)
+        const fallback = generateLocalFallback(selectedPlan);
+        devocionais = fallback.devocionais;
+        study = fallback.estudo;
+
+        index = 0;
+        completed = new Array(devocionais.length).fill(false);
+
+        saveToLocal();
+        showDev(index);
+        statusEl.textContent = 'Offline (gerado localmente)';
+      } finally {
+        loadingBox.style.display = 'none';
+      }
+    });
+
+    /* Show devotional */
+    function showDev(i) {
+      if (!devocionais || !devocionais.length) return;
+
+      devTitle.textContent = `Devocional ${i + 1}`;
+      devText.textContent = devocionais[i] || '—';
+      progressText.textContent = `${i + 1} / ${devocionais.length}`;
+      const done = completed.filter(Boolean).length;
+      progressSummary.textContent = `${done} / ${devocionais.length} concluídos`;
+      bar.style.width = `${Math.round((done / devocionais.length) * 100)}%`;
+
+      devFull.style.display = 'flex';
+      studyText.textContent = study || '—';
+
+      document.getElementById('studyCard').style.display = (i >= devocionais.length) ? 'block' : 'none';
+
+      updateNavButtons();
+    }
+
+    function updateNavButtons() {
+      btnPrev.disabled = index <= 0;
+      btnNext.textContent = (index < devocionais.length - 1) ? 'Próximo Devocional' : 'Abrir Estudo';
+    }
+
+    /* Navigation */
+    btnPrev.addEventListener('click', () => {
+      if (index <= 0) return;
+      index--;
+      showDev(index);
+      saveToLocal();
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (index < devocionais.length - 1) {
+        index++;
+        showDev(index);
+        saveToLocal();
+      } else {
+        document.getElementById('studyCard').style.display = 'block';
+        devFull.style.display = 'none';
+      }
+    });
+
+    btnFinish.addEventListener('click', () => {
+      alert('Parabéns! Plano concluído.');
+      clearPlan();
+    });
+
+    /* Storage and utils */
+    btnClearData.addEventListener('click', () => {
+      if (confirm('Remover dados salvos no dispositivo?')) clearPlan();
+    });
+
+    function saveToLocal() {
+      const obj = { plan: selectedPlan, devocionais, study, index, completed };
+      try {
+        localStorage.setItem('cnp_plan', JSON.stringify(obj));
+      } catch (e) {
+        console.warn('Não foi possível salvar localmente', e);
+      }
+    }
+
+    function loadFromLocal() {
+      try {
+        const raw = localStorage.getItem('cnp_plan');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function loadIfExists() {
+      const p = loadFromLocal();
+      if (p && Array.isArray(p.devocionais) && p.devocionais.length) {
+        selectedPlan = p.plan;
+        devocionais = p.devocionais;
+        study = p.study || '';
+        index = p.index || 0;
+        completed = p.completed || new Array(devocionais.length).fill(false);
+        summaryPlan.textContent = selectedPlan || 'Nenhum plano selecionado';
+        statusEl.textContent = 'Plano salvo';
+      }
+    }
+
+    btnOpenSaved.addEventListener('click', () => {
+      const p = loadFromLocal();
+      if (!p) return alert('Nenhum plano salvo encontrado.');
+      selectedPlan = p.plan;
+      devocionais = p.devocionais || [];
+      study = p.study || '';
+      index = p.index || 0;
+      completed = p.completed || new Array(devocionais.length).fill(false);
+      summaryPlan.textContent = selectedPlan;
+      stepChoose.style.display = 'none';
+      stepResult.classList.add('active');
+      showDev(index);
+    });
+
+    btnDownloadAll.addEventListener('click', () => {
+      if (!devocionais || !devocionais.length) return alert('Nenhum devocional para baixar.');
+      const content =
+        `Plano: ${selectedPlan}\n\nEstudo:\n${study}\n\n` +
+        devocionais.map((d,i)=>`Devocional ${i+1}\n${d}\n\n`).join('');
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${selectedPlan ? selectedPlan.replace(/\s+/g,'_') : 'devocionais'}_devocionais.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    function clearPlan() {
+      try { localStorage.removeItem('cnp_plan'); } catch {}
+      selectedPlan = null;
+      devocionais = [];
+      study = '';
+      index = 0;
+      completed = [];
+      summaryPlan.textContent = 'Nenhum plano selecionado';
+      statusEl.textContent = 'Pronto';
+      stepResult.classList.remove('active');
+      stepChoose.style.display = 'block';
+      devFull.style.display = 'none';
+      document.getElementById('studyCard').style.display = 'none';
+      bar.style.width = '0%';
+      progressSummary.textContent = '0 / 0 concluídos';
+    }
+
+    function generateLocalFallback(planName) {
+      const devs = [];
+      for (let i = 0; i < 7; i++) {
+        devs.push(`${planName} — reflexão ${i + 1}. Uma breve meditação e aplicação prática para hoje.`);
+      }
+      return { devocionais: devs, estudo: `Estudo breve sobre ${planName}` };
+    }
+
+    // init
+    loadIfExists();
+  })();
+  </script>
 </body>
 </html>
