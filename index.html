@@ -256,229 +256,301 @@
   </div>
 
   <script>
-    const BACKEND = 'https://caminhando-backend.onrender.com';
+  const BACKEND = 'https://caminhando-backend.onrender.com';
 
-    const bodyEl = document.body;
-    const themeToggle = document.getElementById('themeToggle');
-    const cards = Array.from(document.querySelectorAll('.card'));
-    const btnStart = document.getElementById('btnStart');
-    const btnClearData = document.getElementById('btnClearData');
-    const summaryPlan = document.getElementById('summaryPlan');
-    const statusEl = document.getElementById('status');
-    const loadingBox = document.getElementById('loadingBox');
-    const stepChoose = document.getElementById('step-choose');
-    const stepResult = document.getElementById('step-result');
-    const devFull = document.getElementById('devFull');
-    const devTitle = document.getElementById('devTitle');
-    const devText = document.getElementById('devText');
-    const progressText = document.getElementById('progressText');
-    const bar = document.getElementById('bar');
-    const progressSummary = document.getElementById('progressSummary');
-    const studyText = document.getElementById('studyText');
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-    const btnFinish = document.getElementById('btnFinish');
-    const btnOpenSaved = document.getElementById('btnOpenSaved');
-    const btnDownloadAll = document.getElementById('btnDownloadAll');
+  // DOM elements
+  const bodyEl = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const btnStart = document.getElementById('btnStart');
+  const btnClearData = document.getElementById('btnClearData');
+  const summaryPlan = document.getElementById('summaryPlan');
+  const statusEl = document.getElementById('status');
+  const loadingBox = document.getElementById('loadingBox');
+  const stepChoose = document.getElementById('step-choose');
+  const stepResult = document.getElementById('step-result');
+  const devFull = document.getElementById('devFull');
+  const devTitle = document.getElementById('devTitle');
+  const devText = document.getElementById('devText');
+  const progressText = document.getElementById('progressText');
+  const bar = document.getElementById('bar');
+  const progressSummary = document.getElementById('progressSummary');
+  const studyText = document.getElementById('studyText');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnFinish = document.getElementById('btnFinish');
+  const btnOpenSaved = document.getElementById('btnOpenSaved');
+  const btnDownloadAll = document.getElementById('btnDownloadAll');
 
-    let selectedPlan = null;
-    let devocionais = [];
-    let study = '';
-    let index = 0;
-    let completed = [];
+  // state
+  let selectedPlan = null;
+  let devocionais = [];
+  let study = '';
+  let index = 0;
+  let completed = [];
 
-    function applyTheme(pref){
-      if(pref === 'dark' || (pref === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)){
-        bodyEl.classList.add('dark');
-        themeToggle.textContent = 'Modo claro';
-      } else {
-        bodyEl.classList.remove('dark');
-        themeToggle.textContent = 'Modo escuro';
-      }
+  // ----------------------------
+  // THEME
+  // ----------------------------
+  function applyTheme(pref) {
+    if (pref === 'dark' || (pref === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      bodyEl.classList.add('dark');
+      themeToggle.textContent = 'Modo claro';
+    } else {
+      bodyEl.classList.remove('dark');
+      themeToggle.textContent = 'Modo escuro';
     }
+  }
 
-    applyTheme('auto');
-    themeToggle.addEventListener('click', ()=> {
-      const dark = bodyEl.classList.toggle('dark');
-      localStorage.setItem('theme', dark ? 'dark' : 'light');
-      themeToggle.textContent = dark ? 'Modo claro' : 'Modo escuro';
-    });
+  applyTheme('auto');
 
-    const savedTheme = localStorage.getItem('theme');
-    if(savedTheme) applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const dark = bodyEl.classList.toggle('dark');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    themeToggle.textContent = dark ? 'Modo claro' : 'Modo escuro';
+  });
 
-    cards.forEach(c => c.addEventListener('click', ()=> {
-      cards.forEach(x=>x.style.boxShadow='none'); c.style.boxShadow = '0 18px 40px rgba(49,46,129,0.12)';
-      selectedPlan = c.dataset.plan;
-      summaryPlan.textContent = selectedPlan;
-    }));
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) applyTheme(savedTheme);
 
-    btnStart.addEventListener('click', async ()=> {
-      if(!selectedPlan) return alert('Escolha um plano primeiro.');
-      stepChoose.style.display = 'none';
-      stepResult.classList.add('active');
-      loadingBox.style.display = 'flex';
-      statusEl.textContent = 'Gerando...';
+  // ----------------------------
+  // SELECT PLAN
+  // ----------------------------
+  cards.forEach(c => c.addEventListener('click', () => {
+    cards.forEach(x => x.style.boxShadow = 'none');
+    c.style.boxShadow = '0 18px 40px rgba(49,46,129,0.12)';
+    selectedPlan = c.dataset.plan;
+    summaryPlan.textContent = selectedPlan;
+  }));
 
-      const payload = {
-        tema: selectedPlan,
-        semanas: 1,
-        instrucoes: "Gerar 7 devocionais diários e 1 estudo semanal com base nos evangelhos (NAA). Cada devocional: título curto, 1-3 parágrafos, 1 aplicação prática."
-      };
+  // ----------------------------
+  // START GENERATION
+  // ----------------------------
+  btnStart.addEventListener('click', async () => {
+    if (!selectedPlan) return alert('Escolha um plano primeiro.');
 
-      try {
-        const res = await fetch(BACKEND, {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
+    stepChoose.style.display = 'none';
+    stepResult.classList.add('active');
+    loadingBox.style.display = 'flex';
+    statusEl.textContent = 'Gerando...';
 
-        if(!res.ok) throw new Error('Erro servidor');
+    const payload = {
+      tema: selectedPlan,
+      semanas: 1,
+      instrucoes:
+        "Gerar 7 devocionais diários e 1 estudo semanal com base nos evangelhos (NAA). " +
+        "Cada devocional: título curto, 1-3 parágrafos, 1 aplicação prática."
+    };
 
-        const data = await res.json();
-        devocionais = Array.isArray(data.devocionais) ? data.devocionais : (data.devos || []);
-        study = data.estudo || data.study || '';
-        if(!Array.isArray(devocionais) || devocionais.length === 0) throw new Error('Resposta vazia');
+    try {
+      const res = await fetch(BACKEND, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-        index = 0;
-        completed = [];
-        saveToLocal();
-        showDev(index);
-        statusEl.textContent = 'Gerado';
-      } catch (err) {
-        const fallback = generateLocalFallback(selectedPlan);
-        devocionais = fallback.devocionais;
-        study = fallback.estudo;
-        index = 0;
-        completed = [];
-        saveToLocal();
-        showDev(index);
-        statusEl.textContent = 'Offline (gerado localmente)';
-      } finally {
-        loadingBox.style.display = 'none';
-      }
-    });
+      if (!res.ok) throw new Error("Erro servidor");
 
-    function showDev(i){
-      if(!devocionais[i]) return;
-      devTitle.textContent = `Devocional ${i+1}`;
-      devText.textContent = devocionais[i];
-      progressText.textContent = `${i+1} / ${devocionais.length}`;
-      const done = completed.filter(x=>x===true).length;
-      progressSummary.textContent = `${done} / ${devocionais.length} concluídos`;
-      bar.style.width = `${Math.round((done/devocionais.length)*100)}%`;
-      devFull.style.display = 'flex';
-      studyText.textContent = study || '—';
-      document.getElementById('studyCard').style.display = i >= devocionais.length ? 'block' : 'none';
-      updateNavButtons();
+      const data = await res.json();
+
+      devocionais = Array.isArray(data.devocionais)
+        ? data.devocionais
+        : (data.devos || []);
+
+      study = data.estudo || data.study || '';
+
+      if (!devocionais.length) throw new Error('Resposta vazia');
+
+      index = 0;
+      completed = new Array(devocionais.length).fill(false);
+
+      saveToLocal();
+      showDev(index);
+      statusEl.textContent = 'Gerado com sucesso';
+
+    } catch (err) {
+      // fallback offline
+      const fallback = generateLocalFallback(selectedPlan);
+      devocionais = fallback.devocionais;
+      study = fallback.estudo;
+      index = 0;
+      completed = new Array(devocionais.length).fill(false);
+
+      saveToLocal();
+      showDev(index);
+
+      statusEl.textContent = 'Offline (gerado localmente)';
+    } finally {
+      loadingBox.style.display = 'none';
     }
+  });
 
-    function updateNavButtons(){
-      btnPrev.disabled = index <= 0;
-      btnNext.textContent = index < devocionais.length-1 ? 'Próximo Devocional' : 'Abrir Estudo';
-    }
+  // ----------------------------
+  // DISPLAY DEVOCIONAL
+  // ----------------------------
+  function showDev(i) {
+    devTitle.textContent = `Devocional ${i + 1}`;
+    devText.textContent = devocionais[i];
 
-    btnPrev.addEventListener('click', ()=> {
-      if(index <= 0) return;
-      index--;
+    progressText.textContent = `${i + 1} / ${devocionais.length}`;
+    const done = completed.filter(x => x).length;
+    progressSummary.textContent = `${done} / ${devocionais.length} concluídos`;
+    bar.style.width = `${Math.round((done / devocionais.length) * 100)}%`;
+
+    devFull.style.display = 'flex';
+    studyText.textContent = study || '—';
+
+    document.getElementById('studyCard').style.display =
+      i >= devocionais.length ? 'block' : 'none';
+
+    updateNavButtons();
+  }
+
+  function updateNavButtons() {
+    btnPrev.disabled = index <= 0;
+    btnNext.textContent =
+      index < devocionais.length - 1 ? 'Próximo Devocional' : 'Abrir Estudo';
+  }
+
+  // ----------------------------
+  // NAVIGATION
+  // ----------------------------
+  btnPrev.addEventListener('click', () => {
+    if (index <= 0) return;
+    index--;
+    showDev(index);
+    saveToLocal();
+  });
+
+  btnNext.addEventListener('click', () => {
+    if (index < devocionais.length - 1) {
+      index++;
       showDev(index);
       saveToLocal();
-    });
+    } else {
+      document.getElementById('studyCard').style.display = 'block';
+      devFull.style.display = 'none';
+    }
+  });
 
-    btnNext.addEventListener('click', ()=> {
-      if(index < devocionais.length-1){
-        index++;
-        showDev(index);
-        saveToLocal();
-      } else {
-        document.getElementById('studyCard').style.display = 'block';
-        devFull.style.display = 'none';
-      }
-    });
+  btnFinish.addEventListener('click', () => {
+    alert('Parabéns! Plano concluído.');
+    clearPlan();
+  });
 
-    btnFinish.addEventListener('click', ()=> {
-      alert('Parabéns! Plano concluído.');
-      clearPlan();
-    });
+  // ----------------------------
+  // STORAGE
+  // ----------------------------
+  btnClearData.addEventListener('click', () => {
+    if (confirm('Remover dados salvos?')) clearPlan();
+  });
 
-    btnClearData.addEventListener('click', ()=> {
-      if(confirm('Remover dados salvos no dispositivo?')) clearPlan();
-    });
+  function saveToLocal() {
+    const obj = { plan: selectedPlan, devocionais, study, index, completed };
+    localStorage.setItem('cnp_plan', JSON.stringify(obj));
+  }
 
-    btnOpenSaved.addEventListener('click', ()=> {
-      const p = loadFromLocal();
-      if(!p) return alert('Nenhum plano salvo encontrado.');
+  function loadFromLocal() {
+    const raw = localStorage.getItem('cnp_plan');
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function loadIfExists() {
+    const p = loadFromLocal();
+    if (p && p.devocionais.length) {
       selectedPlan = p.plan;
-      devocionais = p.devocionais || [];
-      study = p.study || '';
-      index = p.index || 0;
+      devocionais = p.devocionais;
+      study = p.study;
+      index = p.index;
       completed = p.completed || new Array(devocionais.length).fill(false);
       summaryPlan.textContent = selectedPlan;
-      stepChoose.style.display = 'none';
-      stepResult.classList.add('active');
-      showDev(index);
-    });
-
-    btnDownloadAll.addEventListener('click', ()=> {
-      if(!devocionais.length) return alert('Nenhum devocional para baixar.');
-      const content = `Plano: ${selectedPlan}\n\nEstudo:\n${study}\n\n` + devocionais.map((d,i)=>`Devocional ${i+1}\n${d}\n\n`).join('');
-      const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `${selectedPlan.replace(/\s+/g,'_')}_devocionais.txt`;
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    function saveToLocal(){
-      const obj = { plan: selectedPlan, devocionais, study, index, completed };
-      localStorage.setItem('cnp_plan', JSON.stringify(obj));
+      statusEl.textContent = 'Plano salvo';
     }
+  }
 
-    function loadFromLocal(){
-      const raw = localStorage.getItem('cnp_plan');
-      if(!raw) return null;
-      try { return JSON.parse(raw); } catch(e){ return null; }
+  btnOpenSaved.addEventListener('click', () => {
+    const p = loadFromLocal();
+    if (!p) return alert('Nenhum plano salvo.');
+
+    selectedPlan = p.plan;
+    devocionais = p.devocionais;
+    study = p.study;
+    index = p.index;
+    completed = p.completed || new Array(devocionais.length).fill(false);
+
+    summaryPlan.textContent = selectedPlan;
+    stepChoose.style.display = 'none';
+    stepResult.classList.add('active');
+
+    showDev(index);
+  });
+
+  // ----------------------------
+  // DOWNLOAD
+  // ----------------------------
+  btnDownloadAll.addEventListener('click', () => {
+    if (!devocionais.length)
+      return alert('Nenhum devocional para baixar.');
+
+    const content =
+      `Plano: ${selectedPlan}\n\nEstudo:\n${study}\n\n` +
+      devocionais.map((d, i) =>
+        `Devocional ${i + 1}\n${d}\n\n`
+      ).join('');
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedPlan.replace(/\s+/g, '_')}_devocionais.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // ----------------------------
+  // CLEAR PLAN
+  // ----------------------------
+  function clearPlan() {
+    localStorage.removeItem('cnp_plan');
+    selectedPlan = null;
+    devocionais = [];
+    study = '';
+    index = 0;
+    completed = [];
+
+    summaryPlan.textContent = 'Nenhum plano selecionado';
+    statusEl.textContent = 'Pronto';
+
+    stepResult.classList.remove('active');
+    stepChoose.style.display = 'block';
+
+    devFull.style.display = 'none';
+    document.getElementById('studyCard').style.display = 'none';
+
+    bar.style.width = '0%';
+    progressSummary.textContent = '0 / 0 concluídos';
+  }
+
+  // ----------------------------
+  // FALLBACK OFFLINE (CORRIGIDO)
+  // ----------------------------
+  function generateLocalFallback(planName) {
+    const devs = [];
+    for (let i = 0; i < 7; i++) {
+      devs.push(`${planName} — reflexão ${i + 1}. Uma breve meditação e aplicação prática para hoje.`);
     }
+    return {
+      devocionais: devs,
+      estudo: `Estudo breve sobre ${planName}`
+    };
+  }
 
-    function clearPlan(){
-      localStorage.removeItem('cnp_plan');
-      selectedPlan = null;
-      devocionais = [];
-      study = '';
-      index = 0;
-      completed = [];
-      summaryPlan.textContent = 'Nenhum plano selecionado';
-      statusEl.textContent = 'Pronto';
-      stepResult.classList.remove('active');
-      stepChoose.style.display = 'block';
-      devFull.style.display = 'none';
-      document.getElementById('studyCard').style.display = 'none';
-      bar.style.width = '0%';
-      progressSummary.textContent = `0 / 0 concluídos`;
-    }
+  loadIfExists();
+</script>
 
-    function loadIfExists(){
-      const p = loadFromLocal();
-      if(p && p.devocionais && p.devocionais.length){
-        selectedPlan = p.plan;
-        devocionais = p.devocionais;
-        study = p.study;
-        index = p.index || 0;
-        completed = p.completed || new Array(devocionais.length).fill(false);
-        summaryPlan.textContent = selectedPlan;
-        statusEl.textContent = 'Plano salvo';
-      }
-    }
-
-    function generateLocalFallback(planName){
-      const devs = [];
-      for(let i=0;i<7;i++){
-        devs.push(`${planName} — reflexão ${i+1}. Uma breve meditação e aplicação prática para hoje.`);
-      }
-      return { devocionais: devs, estudio:'Estudo breve sobre ' + planName, estudo: 'Estudo breve sobre ' + planName};
-    }
-
-    loadIfExists();
-  </script>
 </body>
 </html>
