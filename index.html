@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Devocional - Caminhando na Palavra </title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#9ca3af;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#071026 0%, #061526 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:28px}
+    .app{width:960px;max-width:96%;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);overflow:hidden;display:grid;grid-template-columns:1fr 420px}
+    header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    header h1{font-size:18px;margin:0;color:var(--accent)}
+    header p{margin:0;color:var(--muted);font-size:13px}
+    .left{padding:22px}
+    label{display:block;font-size:13px;margin-bottom:8px;color:var(--muted)}
+    textarea{width:100%;min-height:140px;background:transparent;border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:8px;color:inherit;resize:vertical}
+    input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .row{display:flex;gap:12px;margin-top:12px}
+    .controls{display:flex;gap:8px;margin-top:12px;align-items:center}
+    button{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:#042029;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.03)}
+    .right{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:20px;border-left:1px solid rgba(255,255,255,0.03)}
+    .preview{background:var(--glass);padding:16px;border-radius:10px;min-height:160px;max-height:420px;overflow:auto}
+    .meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .small{font-size:13px;color:var(--muted)}
+    .history{margin-top:14px}
+    .hist-item{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px;cursor:pointer}
+    footer{grid-column:1/-1;padding:12px 18px;background:rgba(0,0,0,0.04);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+    .note{font-size:12px;color:#cbd5e1}
+    .flex{display:flex;gap:8px;align-items:center}
+    .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,0.06);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;display:inline-block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media (max-width:900px){.app{grid-template-columns:1fr;}.right{order:3;border-left:none;border-top:1px solid rgba(255,255,255,0.03)}}
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Gerador de Devocionais">
+    <header>
+      <div>
+        <h1>🌿 Caminhando na Palavra — Devocionais</h1>
+        <p>Gerador devocional baseado no evangelho (NAA) — agora usando OpenRouter</p>
+      </div>
+      <div class="flex">
+        <div class="small">Versão-alvo: NAA</div>
+      </div>
+    </header>
+
+    <main class="left">
+      <label for="verse">Verso ou Referência</label>
+      <textarea id="verse" placeholder="Ex.: João 3:16 — ou cole parte do texto (máx 90 caracteres)"></textarea>
+
+      <div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
+        <div style="flex:1">
+          <label for="tone">Tom</label>
+          <select id="tone" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+            <option>Reflexivo</option>
+            <option>Aplicativo</option>
+            <option>Encerramento de culto</option>
+            <option>Para jovens</option>
+          </select>
+        </div>
+        <div style="width:180px">
+          <label for="length">Tamanho</label>
+          <select id="length" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+            <option>Curto (1-2 parágrafos)</option>
+            <option>Médio (3-4 parágrafos)</option>
+            <option>Longo (5-7 parágrafos)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="apikey" type="text" placeholder="Chave OpenRouter" />
+        <button id="generate">Gerar</button>
+        <button id="save" class="ghost">Salvar</button>
+      </div>
+
+      <div style="margin-top:10px;color:var(--muted);font-size:13px">
+        Use referências para evitar reproduzir longos trechos da NAA (direitos autorais).
+      </div>
+
+      <div class="history">
+        <h3 style="margin:12px 0 8px 0;font-size:14px;color:var(--muted)">Histórico</h3>
+        <div id="historyList"></div>
+      </div>
+    </main>
+
+    <aside class="right">
+      <div class="meta">
+        <div>
+          <div class="small">Pré-visualização</div>
+          <div class="small">Saída Gerada</div>
+        </div>
+        <div class="small">Local</div>
+      </div>
+
+      <div class="preview" id="preview" tabindex="0">Seu devocional aparecerá aqui.</div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button id="copy">Copiar</button>
+        <button id="download" class="ghost">Baixar .txt</button>
+      </div>
+
+      <div style="margin-top:14px;color:var(--muted);font-size:13px">
+        O gerador usa OpenRouter quando você insere sua API Key.
+      </div>
+    </aside>
+
+    <footer>
+      <div class="note">Versão atualizada com suporte OpenRouter</div>
+      <div class="small">Peça melhorias se quiser mais recursos</div>
+    </footer>
+  </div>
+
+  <script>
+    const verseEl = document.getElementById('verse');
+    const preview = document.getElementById('preview');
+    const generateBtn = document.getElementById('generate');
+    const copyBtn = document.getElementById('copy');
+    const downloadBtn = document.getElementById('download');
+    const apiKeyInput = document.getElementById('apikey');
+    const historyList = document.getElementById('historyList');
+    const saveBtn = document.getElementById('save');
+
+    function renderHistory(){
+      const h = JSON.parse(localStorage.getItem('dev_hist')||'[]');
+      historyList.innerHTML = '';
+      h.slice().reverse().forEach((it)=>{
+        const d = document.createElement('div');d.className='hist-item';d.textContent = it.title;
+        d.onclick = ()=>{ preview.textContent = it.text; }
+        historyList.appendChild(d);
+      });
+    }
+    renderHistory();
+
+    function saveToHistory(title, text){
+      const arr = JSON.parse(localStorage.getItem('dev_hist')||'[]');
+      arr.push({title, text});
+      localStorage.setItem('dev_hist', JSON.stringify(arr.slice(-50)));
+      renderHistory();
+    }
+
+    function simpleLocalGenerate({verse, tone, length}){
+      const base = verse ? `Base: ${verse}` : '';
+      const out = [];
+      if(base) out.push(base);
+      out.push(`Reflexão (${tone}): Deus nos convida a viver esta verdade de forma prática.`);
+      out.push(`Pense em uma ação simples que você pode tomar hoje.`);
+      if(length.includes('Longo')) out.push('Permaneça em oração e peça discernimento.');
+      return out.join('
+
+');
+    }
+
+    async function generateDevotional(){
+      const verse = verseEl.value.trim();
+      const tone = document.getElementById('tone').value;
+      const length = document.getElementById('length').value;
+      const apikey = apiKeyInput.value.trim();
+
+      preview.textContent = '';
+
+      if(!apikey){
+        const local = simpleLocalGenerate({verse,tone,length});
+        preview.textContent = local;
+        saveToHistory(verse||'Devocional', local);
+        return;
+      }
+
+      preview.innerHTML = '<div class="spinner"></div> Gerando...';
+
+      const systemPrompt = `Você gera devocionais baseados no evangelho em português (NAA). Não copie trechos longos de textos bíblicos protegidos. Resuma, explique e aplique.`;
+
+      const userPrompt = `Verso/Referência: ${verse}
+Tom: ${tone}
+Tamanho: ${length}
+Escreva: Título, 2-7 parágrafos, 1 ação prática e 1 oração.`;
+
+      try{
+        const resp = await fetch("https://caminhando-api.onrender.com",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer "+ 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,
+            "HTTP-Referer":window.location.origin,
+            "X-Title":"Devocional App"
+          },
+          body:JSON.stringify({
+            model:"openai/gpt-4o-mini",
+            messages:[{role:'system', content:systemPrompt},{role:'user', content:userPrompt}],
+            max_tokens:700,
+            temperature:0.7
+          })
+        });
+
+        const data = await resp.json();
+        const text = data.choices?.[0]?.message?.content || 'Sem retorno da IA.';
+        preview.textContent = text;
+        saveToHistory(verse||'Devocional', text);
+
+      }catch(err){
+        preview.textContent = 'Erro ao usar OpenRouter: '+err.message;
+      }
+    }
+
+    generateBtn.addEventListener('click', generateDevotional);
+
+    copyBtn.addEventListener('click', ()=>{
+      navigator.clipboard.writeText(preview.textContent||"");
+      alert('Copiado!');
+    });
+
+    downloadBtn.addEventListener('click',()=>{
+      const blob = new Blob([preview.textContent||""],{type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');a.href=url;a.download='devocional.txt';a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    saveBtn.addEventListener('click',()=>{
+      if(!preview.textContent) return alert('Nada a salvar');
+      saveToHistory(prompt('Título:')||'Devocional', preview.textContent);
+    });
+  </script>
+</body>
+</html>
