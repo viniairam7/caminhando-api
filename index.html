@@ -3,290 +3,634 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Devocional - Caminhando na Palavra</title>
+  <title>Caminhando na Palavra</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#9ca3af;--glass:rgba(255,255,255,0.03)}
-    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    :root{
+      --bg:#f6f8fb;
+      --primary:#3147b2;
+      --accent:#2fb8c6;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --glass:rgba(13,27,42,0.03);
+      --success:#34d399;
+      --danger:#fb7185;
+    }
+    *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#071026 0%, #061526 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:28px}
-    .app{width:1024px;max-width:96%;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);overflow:hidden;display:grid;grid-template-columns:1fr 420px;gap:0}
-    header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.03)}
-    header h1{font-size:18px;margin:0;color:var(--accent)}
-    header p{margin:0;color:var(--muted);font-size:13px}
-    .left{padding:22px}
-    label{display:block;font-size:13px;margin-bottom:8px;color:var(--muted)}
-    textarea{width:100%;min-height:140px;background:transparent;border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:8px;color:inherit;resize:vertical}
-    select,input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-    .row{display:flex;gap:12px;margin-top:12px}
-    .controls{display:flex;gap:8px;margin-top:12px;align-items:center}
-    button{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:#042029;font-weight:600;cursor:pointer}
-    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.03)}
-    .right{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:20px;border-left:1px solid rgba(255,255,255,0.03)}
-    .preview{background:var(--glass);padding:16px;border-radius:10px;min-height:160px;max-height:520px;overflow:auto;white-space:pre-wrap}
-    .meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px}
-    .small{font-size:13px;color:var(--muted)}
-    .history{margin-top:14px}
-    .hist-item{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px;cursor:pointer}
-    footer{grid-column:1/-1;padding:12px 18px;background:rgba(0,0,0,0.04);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-    .note{font-size:12px;color:#cbd5e1}
-    .flex{display:flex;gap:8px;align-items:center}
-    .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,0.06);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#f3f6fb 0%, #eef6ff 100%);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px;
+    }
+    .container{
+      width:1100px;
+      max-width:98%;
+      background:transparent;
+      display:block;
+    }
+
+    header.hero{
+      text-align:center;
+      margin-bottom:28px;
+    }
+    .brand{
+      display:inline-flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:8px;
+    }
+    .logo{
+      width:64px;height:64px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:26px;box-shadow:0 6px 18px rgba(49,71,178,0.18)
+    }
+    h1{font-size:48px;margin:0 0 8px 0;color:#0b1220}
+    p.lead{margin:0;color:var(--muted);font-size:18px}
+
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px;align-items:stretch}
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:22px;
+      box-shadow: 0 8px 18px rgba(15,23,36,0.06);
+      min-height:140px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .icon{
+      width:44px;height:44px;border-radius:10px;background:#eef6ff;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:18px;
+    }
+    .card h3{margin:0;font-size:18px}
+    .card p{margin:0;color:var(--muted);font-size:14px}
+
+    .cta-row{text-align:center;margin:28px 0 44px 0}
+    .btn{
+      display:inline-block;background:var(--primary);color:#fff;padding:12px 28px;border-radius:10px;border:none;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(49,71,178,0.14)
+    }
+    .btn.ghost{background:transparent;color:var(--primary);border:1px solid rgba(49,71,178,0.08)}
+    .small-muted{color:var(--muted);font-size:13px;margin-top:8px}
+
+    main.app{
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:18px;
+      align-items:start;
+    }
+
+    .panel{
+      background:var(--card);
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.04);
+    }
+
+    .form-row{display:flex;gap:12px;align-items:center}
+    label{display:block;font-size:14px;color:#111827;margin-bottom:8px}
+    textarea,select,input{width:100%;padding:12px;border-radius:10px;border:1px solid #eef2f7;background:transparent;font-size:14px;color:inherit}
+    textarea{min-height:120px;resize:vertical}
+    .controls{display:flex;gap:12px;margin-top:12px}
+
+    .preview{
+      background:var(--glass);
+      border-radius:10px;padding:14px;min-height:180px;white-space:pre-wrap;color:#071128;
+    }
+
+    .meta-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .muted{color:var(--muted);font-size:13px}
+    .history{margin-top:12px}
+    .hist-item{padding:10px;border-radius:8px;background:#fff;margin-bottom:8px;border:1px solid #f1f5f9;cursor:pointer}
+
+    .dashboard{
+      display:grid;grid-template-columns:1fr;gap:18px;
+    }
+    .progress-bar{height:10px;background:#eef2ff;border-radius:999px;overflow:hidden}
+    .progress-bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#5b8cff);width:0%}
+
+    .stats{display:flex;gap:12px;margin-top:12px}
+    .stat{flex:1;background:#f8fafc;padding:18px;border-radius:10px;text-align:center}
+    .stat strong{display:block;font-size:20px;color:var(--primary)}
+    .stat span{display:block;color:var(--muted);font-size:13px;margin-top:6px}
+
+    .dashboard-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+    .devoc-card{padding:18px;border-radius:10px;background:#fff;border:1px solid #f1f5f9}
+    .devoc-card h4{margin:0 0 8px 0}
+    .devoc-card .verse{background:#f1f6ff;padding:12px;border-radius:8px;color:var(--primary);margin-bottom:12px;border:1px solid #e6eefc}
+
+    .btn-block{display:block;width:100%;text-align:center;padding:12px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
+
+    .plan-list{display:flex;flex-direction:column;gap:12px}
+    .plan-item{padding:16px;border-radius:10px;background:#fff;border:1px solid #f1f5f9}
+
+    footer.pagefoot{margin-top:26px;text-align:center;color:var(--muted);font-size:13px}
+
     @media (max-width:980px){
-      .app{grid-template-columns:1fr; padding:16px}
-      .right{order:3;border-left:none;border-top:1px solid rgba(255,255,255,0.03)}
-      .app{width:96%}
+      main.app{grid-template-columns:1fr; }
+      .features{grid-template-columns:1fr;gap:12px}
+      .brand{justify-content:center}
+      h1{font-size:36px}
     }
   </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Gerador de Devocionais">
-    <header>
-      <div>
-        <h1>🌿 Caminhando na Palavra — Devocionais</h1>
-        <p>Gerador devocional baseado no evangelho (NAA). Chamada segura via seu backend no Render.</p>
+  <div class="container" id="app">
+    <header class="hero">
+      <div class="brand">
+        <div class="logo">📖</div>
       </div>
-      <div class="flex">
-        <div class="small">Versão-alvo: NAA</div>
+      <h1>Caminhando na Palavra</h1>
+      <p class="lead">Sua jornada de fé e crescimento espiritual em Cristo</p>
+
+      <div class="features" aria-hidden="false">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="icon">📚</div>
+            <div>
+              <h3>Estudos Semanais</h3>
+              <p>Estudos bíblicos profundos e práticos gerados especialmente para você</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="icon">💟</div>
+            <div>
+              <h3>Devocionais Diários</h3>
+              <p>Comece cada dia com uma palavra de encorajamento e direção</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="icon">✨</div>
+            <div>
+              <h3>Acompanhamento</h3>
+              <p>Registre seu progresso e celebre cada conquista espiritual</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn" id="startJourney">Começar Minha Jornada</button>
+        <div class="small-muted">Gratuito • Personalizado • Baseado nas Escrituras</div>
       </div>
     </header>
 
-    <main class="left">
-      <label for="verse">Verso ou Referência</label>
-      <textarea id="verse" placeholder="Ex.: João 3:16 — ou cole parte do texto (máx 90 caracteres)"></textarea>
-
-      <div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
-        <div style="flex:1">
-          <label for="tone">Tom</label>
-          <select id="tone" aria-label="Tom">
-            <option>Reflexivo</option>
-            <option>Aplicativo</option>
-            <option>Encerramento de culto</option>
-            <option>Para jovens</option>
-          </select>
+    <main class="app">
+      <section class="panel" id="panel-main">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <strong style="font-size:18px">Gerador de Devocionais</strong>
+            <div class="muted" style="margin-top:4px">Baseado em referências do Evangelho</div>
+          </div>
+          <div class="muted">Versão-alvo: NAA</div>
         </div>
-        <div style="width:220px">
-          <label for="length">Tamanho</label>
-          <select id="length" aria-label="Tamanho">
-            <option>Curto (1-2 parágrafos)</option>
-            <option>Médio (3-4 parágrafos)</option>
-            <option>Longo (5-7 parágrafos)</option>
-          </select>
+
+        <div>
+          <label for="verse">Verso ou Referência</label>
+          <textarea id="verse" placeholder="Ex.: João 3:16 — ou cole parte do texto (máx 90 caracteres)"></textarea>
         </div>
-      </div>
 
-      <div class="controls" role="group" aria-label="Controles">
-        <!-- removi o input de API key: a chave fica no backend -->
-        <button id="generate">Gerar</button>
-        <button id="save" class="ghost" type="button">Salvar</button>
-        <button id="clear" class="ghost" type="button">Limpar</button>
-      </div>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <div style="flex:1">
+            <label for="tone">Tom</label>
+            <select id="tone">
+              <option>Reflexivo</option>
+              <option>Aplicativo</option>
+              <option>Encerramento de culto</option>
+              <option>Para jovens</option>
+            </select>
+          </div>
+          <div style="width:220px">
+            <label for="length">Tamanho</label>
+            <select id="length">
+              <option>Curto (1-2 parágrafos)</option>
+              <option>Médio (3-4 parágrafos)</option>
+              <option>Longo (5-7 parágrafos)</option>
+            </select>
+          </div>
+        </div>
 
-      <div style="margin-top:10px;color:var(--muted);font-size:13px">
-        Observação: a chave OpenRouter deve estar armazenada no servidor (Render). Este front-end envia apenas os parâmetros: <code>verse</code>, <code>tone</code>, <code>length</code>.
-      </div>
+        <div class="controls" style="margin-top:14px">
+          <button class="btn" id="btnGenerate">Gerar Devocional</button>
+          <button class="btn ghost" id="btnSave">Salvar</button>
+          <button class="btn ghost" id="btnClear">Limpar</button>
+        </div>
 
-      <div class="history" aria-live="polite">
-        <h3 style="margin:12px 0 8px 0;font-size:14px;color:var(--muted)">Histórico</h3>
-        <div id="historyList"></div>
-      </div>
+        <div style="margin-top:16px" class="history">
+          <div class="muted">Histórico</div>
+          <div id="historyList"></div>
+        </div>
+      </section>
+
+      <aside class="panel" id="panel-preview">
+        <div class="meta-row">
+          <div>
+            <div class="muted">Pré-visualização</div>
+            <div class="muted">Saída gerada</div>
+          </div>
+          <div class="muted">Salvo localmente</div>
+        </div>
+
+        <div class="preview" id="preview">Seu devocional aparecerá aqui.</div>
+
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn" id="btnCopy">Copiar</button>
+          <button class="btn ghost" id="btnDownload">Baixar .txt</button>
+        </div>
+
+        <div style="margin-top:12px" class="muted">Se o servidor estiver indisponível, será gerada uma versão local simples.</div>
+      </aside>
     </main>
 
-    <aside class="right">
-      <div class="meta">
+    <section style="margin-top:26px" class="panel" id="plan-section" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
-          <div class="small">Pré-visualização</div>
-          <div class="small">Saída gerada pelo servidor</div>
+          <strong style="font-size:18px">Escolha Seu Plano</strong>
+          <div class="muted">Selecione um tema e a duração do seu estudo</div>
         </div>
-        <div class="small">Salvo localmente</div>
       </div>
 
-      <div class="preview" id="preview" tabindex="0">Seu devocional aparecerá aqui.</div>
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px">
+        <label class="muted">Qual tema você deseja estudar?</label>
 
-      <div style="margin-top:12px;display:flex;gap:8px">
-        <button id="copy">Copiar</button>
-        <button id="download" class="ghost">Baixar .txt</button>
+        <div class="plan-list" id="themeList">
+          <div class="plan-item">
+            <label style="display:flex;align-items:center;gap:12px">
+              <input type="radio" name="theme" value="Crescimento espiritual" checked>
+              <div style="margin-left:8px">
+                <strong>Crescimento espiritual</strong>
+                <div class="muted" style="margin-top:6px;font-size:13px">Desenvolva sua maturidade cristã através de disciplinas espirituais.</div>
+              </div>
+            </label>
+          </div>
+          <div class="plan-item">
+            <label style="display:flex;align-items:center;gap:12px">
+              <input type="radio" name="theme" value="Identidade em Cristo">
+              <div style="margin-left:8px">
+                <strong>Identidade em Cristo</strong>
+                <div class="muted" style="margin-top:6px;font-size:13px">Descubra quem você é em Cristo e seu propósito à luz das Escrituras.</div>
+              </div>
+            </label>
+          </div>
+          <div class="plan-item">
+            <label style="display:flex;align-items:center;gap:12px">
+              <input type="radio" name="theme" value="Vida de oração">
+              <div style="margin-left:8px">
+                <strong>Vida de oração</strong>
+                <div class="muted" style="margin-top:6px;font-size:13px">Aprofunde sua comunhão com Deus através de oração consistente.</div>
+              </div>
+            </label>
+          </div>
+          <div class="plan-item">
+            <label style="display:flex;align-items:center;gap:12px">
+              <input type="radio" name="theme" value="Evangelismo">
+              <div style="margin-left:8px">
+                <strong>Evangelismo</strong>
+                <div class="muted" style="margin-top:6px;font-size:13px">Aprenda a compartilhar o evangelho com eficácia e fazer discípulos.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+          <div style="width:120px">
+            <label class="muted">Semanas</label>
+            <input type="number" id="weeks" min="1" max="12" value="4">
+          </div>
+          <div style="flex:1">
+            <div class="muted" style="margin-bottom:8px">Resumo do Seu Plano</div>
+            <div style="background:#fff;padding:12px;border-radius:10px;border:1px solid #f1f5f9">
+              <div style="display:flex;justify-content:space-between">
+                <div class="muted">Tema:</div>
+                <div id="summaryTheme">Identidade em Cristo</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px">
+                <div class="muted">Duração:</div>
+                <div id="summaryDuration">4 semanas</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px">
+                <div class="muted">Estudos semanais:</div>
+                <div id="summaryStudies">4</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px">
+                <div class="muted">Devocionais:</div>
+                <div id="summaryDevos">28</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:14px">
+          <button class="btn ghost" id="btnBack">Voltar</button>
+          <button class="btn" id="btnStartPlan">Iniciar Plano</button>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:26px" class="panel" id="dashboard-section" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <strong style="font-size:18px">Olá,</strong>
+          <div class="muted">Continue sua jornada espiritual</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="btnViewPlans">Ver todos os planos</button>
+        </div>
       </div>
 
-      <div style="margin-top:14px;color:var(--muted);font-size:13px">
-        Se o servidor retornar erro, o app gera uma versão local simples como fallback.
-      </div>
-    </aside>
+      <div class="dashboard">
+        <div>
+          <div class="panel" style="padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <strong>Seu Plano Atual</strong>
+                <div class="muted">Crescimento espiritual</div>
+              </div>
+              <div class="muted">0%</div>
+            </div>
 
-    <footer>
-      <div class="note">App pronto • Backend: <code>https://caminhando-api-1.onrender.com</code></div>
-      <div class="small">Se quiser, eu gero também o código do servidor (Node/Express) que usa a chave com segurança.</div>
-    </footer>
+            <div style="margin-top:12px">
+              <div class="progress-bar"><i style="width:0%"></i></div>
+              <div class="stats">
+                <div class="stat"><strong id="statStudies">0</strong><span>Estudos</span></div>
+                <div class="stat"><strong id="statDevos">0</strong><span>Devocionais</span></div>
+                <div class="stat"><strong id="statWeek">Semana 1</strong><span>Atual</span></div>
+                <div class="stat"><strong id="statRemaining">0</strong><span>Restantes</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="dashboard-grid">
+            <div class="devoc-card">
+              <h4>Devocional de Hoje</h4>
+              <div class="muted" style="margin-bottom:8px" id="devoc-date">—</div>
+              <div class="verse" id="devoc-verse">—</div>
+              <div id="devoc-text" style="margin-top:12px;color:#0f1724">Nenhum devocional gerado ainda.</div>
+              <div style="margin-top:12px">
+                <button class="btn-block" id="btnReadFull">Ler Devocional Completo</button>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div>
+                  <strong>Estudo da Semana</strong>
+                  <div class="muted">Semana 1</div>
+                </div>
+              </div>
+
+              <div style="margin-top:12px">
+                <button class="btn-block ghost" id="btnAccessStudy">Acessar o estudo</button>
+                <div style="height:12px"></div>
+                <button class="btn-block ghost" id="btnAllStudies">Ver todos os estudos</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="pagefoot">© Caminhando na Palavra</footer>
   </div>
 
   <script>
-    // CONFIG
-    const BACKEND_URL = 'https://caminhando-api-1.onrender.com'; // seu endpoint Render (fornecido)
-    // Se seu backend precisa de um caminho específico, altere aqui (ex: BACKEND_URL + '/generate')
+    const BACKEND_URL = 'https://caminhando-api-1.onrender.com';
 
-    // UI elements
-    const verseEl = document.getElementById('verse');
-    const preview = document.getElementById('preview');
-    const generateBtn = document.getElementById('generate');
-    const copyBtn = document.getElementById('copy');
-    const downloadBtn = document.getElementById('download');
-    const historyList = document.getElementById('historyList');
-    const saveBtn = document.getElementById('save');
-    const clearBtn = document.getElementById('clear');
+    function qs(sel, root=document) { return root.querySelector(sel) }
+    function qsa(sel, root=document) { return Array.from(root.querySelectorAll(sel)) }
 
-    // History management
-    function renderHistory(){
-      const h = JSON.parse(localStorage.getItem('dev_hist') || '[]');
+    const startJourney = qs('#startJourney');
+    const panelMain = qs('#panel-main');
+    const planSection = qs('#plan-section');
+    const dashboardSection = qs('#dashboard-section');
+    const btnGenerate = qs('#btnGenerate');
+    const btnSave = qs('#btnSave');
+    const btnClear = qs('#btnClear');
+    const btnCopy = qs('#btnCopy');
+    const btnDownload = qs('#btnDownload');
+    const preview = qs('#preview');
+    const historyList = qs('#historyList');
+    const verseEl = qs('#verse');
+    const toneEl = qs('#tone');
+    const lengthEl = qs('#length');
+    const startPlanBtn = qs('#btnStartPlan');
+    const btnBack = qs('#btnBack');
+    const weeksInput = qs('#weeks');
+    const summaryTheme = qs('#summaryTheme');
+    const summaryDuration = qs('#summaryDuration');
+    const summaryStudies = qs('#summaryStudies');
+    const summaryDevos = qs('#summaryDevos');
+    const themeInputs = qsa('input[name="theme"]');
+    const statStudies = qs('#statStudies');
+    const statDevos = qs('#statDevos');
+    const statWeek = qs('#statWeek');
+    const statRemaining = qs('#statRemaining');
+    const devocVerse = qs('#devoc-verse');
+    const devocText = qs('#devoc-text');
+    const devocDate = qs('#devoc-date');
+    const btnReadFull = qs('#btnReadFull');
+
+    function loadHistory(){
+      const h = JSON.parse(localStorage.getItem('dev_hist')||'[]');
       historyList.innerHTML = '';
-      h.slice().reverse().forEach((it, idx) => {
+      h.slice().reverse().forEach(item=>{
         const d = document.createElement('div');
-        d.className = 'hist-item';
-        d.textContent = it.title || (it.verse || 'Devocional salvo');
-        d.title = new Date(it.date).toLocaleString();
-        d.onclick = () => { preview.textContent = it.text; };
+        d.className='hist-item';
+        d.textContent = item.title || (item.verse||'Devocional salvo');
+        d.addEventListener('click', ()=> {
+          preview.textContent = item.text;
+        });
         historyList.appendChild(d);
       });
     }
-    renderHistory();
+    loadHistory();
 
-    function saveToHistory(title, text, verse){
-      const arr = JSON.parse(localStorage.getItem('dev_hist') || '[]');
-      arr.push({ title: title || ('Devocional ' + new Date().toLocaleString()), text, verse, date: new Date().toISOString() });
+    function saveHistory(title,text,verse=''){
+      const arr = JSON.parse(localStorage.getItem('dev_hist')||'[]');
+      arr.push({title,text,verse,date:new Date().toISOString()});
       localStorage.setItem('dev_hist', JSON.stringify(arr.slice(-100)));
-      renderHistory();
+      loadHistory();
     }
 
-    // Local fallback generator (light)
-    function simpleLocalGenerate({verse, tone, length}) {
-      const lines = [];
-      if (verse) lines.push(`Base: ${verse}`);
-      lines.push(`Reflexão (${tone}): Deus nos chama a viver esta verdade de maneira prática.`);
-      if (length.includes('Curto')) {
-        lines.push('Uma curta meditação: permita que o versículo molde sua atitude hoje.');
-        lines.push('Oração: Senhor, ajuda-me a aplicar esta verdade.');
-      } else if (length.includes('Médio')) {
-        lines.push('Leitura e aplicação: pense em um passo concreto para esta semana.');
-        lines.push('Compartilhe com alguém e ore por direcionamento.');
-        lines.push('Oração: Senhor, dá-me sabedoria e coragem.');
+    function simpleLocalGenerate({verse,tone,length}){
+      const out = [];
+      if(verse) out.push(`Base: ${verse}`);
+      out.push(`${tone}: Deus nos chama a viver essa verdade.`);
+      if(length.includes('Curto')){
+        out.push('Meditação curta: aplique hoje.');
+        out.push('Oração: Senhor, ajuda-me a viver sua palavra.');
+      } else if(length.includes('Médio')){
+        out.push('Meditação: reflita e coloque em prática esta semana.');
+        out.push('Oração: Senhor, concede sabedoria e ação.');
       } else {
-        lines.push('Reflexão estendida: peça discernimento para viver a palavra em ações diárias.');
-        lines.push('Liste mudanças práticas e peça ao Espírito força para perseverar.');
-        lines.push('Oração: Senhor, sustenta-nos e transforma-nos pela Tua palavra.');
+        out.push('Meditação estendida: peça ao Espírito entendimento e perseverança.');
+        out.push('Oração: Transforma-nos pela Tua Palavra.');
       }
-      return lines.join('\n\n');
+      return out.join('\n\n');
     }
 
-    // Attempt to extract text from multiple response shapes
-    function extractTextFromResponse(data) {
-      // OpenAI-style: choices[0].message.content
-      if (data?.choices?.[0]?.message?.content) return data.choices[0].message.content;
-      // older OpenAI style: choices[0].text
-      if (data?.choices?.[0]?.text) return data.choices[0].text;
-      // simple wrapper: { text: "..." } or { result: "..."}
-      if (typeof data.text === 'string') return data.text;
-      if (typeof data.result === 'string') return data.result;
-      // raw string response
-      if (typeof data === 'string') return data;
-      // unknown shape
-      return null;
-    }
-
-    async function generateDevotional() {
-      const verse = verseEl.value.trim();
-      const tone = document.getElementById('tone').value;
-      const length = document.getElementById('length').value;
-
-      preview.textContent = '';
-      preview.dataset.loading = 'true';
-      preview.innerHTML = '<span class="spinner" aria-hidden="true"></span> Gerando...';
-
-      // Build payload for your backend — minimal and explicit.
-      const payload = { verse, tone, length };
-
-      try {
+    async function callBackend(payload){
+      try{
         const resp = await fetch(BACKEND_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-            // sem Authorization aqui — a chave deve estar no servidor
-          },
-          body: JSON.stringify(payload),
-          // timeout handling not native; can be added with AbortController if desired
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
         });
-
-        if (!resp.ok) {
-          // Try to read text for debugging
-          let t;
-          try { t = await resp.text(); } catch(e){ t = '';}
-          throw new Error(`Servidor retornou ${resp.status}: ${t}`);
+        if(!resp.ok){
+          const txt = await resp.text().catch(()=>resp.statusText);
+          throw new Error(`Servidor: ${resp.status} ${txt}`);
         }
-
-        const data = await resp.json().catch(async () => {
-          // caso não seja JSON, tentar texto
-          const txt = await resp.text();
-          return txt;
-        });
-
-        const text = extractTextFromResponse(data);
-        if (text) {
-          preview.textContent = text;
-          saveToHistory(verse || ('Devocional ' + new Date().toLocaleString()), text, verse);
-        } else {
-          // Se servidor retornou formato inesperado, mostrar conteúdo completo p/ debug
-          preview.textContent = 'Resposta do servidor em formato inesperado.\n\n' + JSON.stringify(data, null, 2);
-        }
-
-      } catch (err) {
-        // fallback local
-        const local = simpleLocalGenerate({ verse, tone, length });
-        preview.textContent = `⚠️ Erro ao conectar ao servidor: ${err.message}\n\nGerando versão local como fallback:\n\n${local}`;
-        saveToHistory(verse || ('Devocional local ' + new Date().toLocaleString()), local, verse);
-      } finally {
-        delete preview.dataset.loading;
+        const j = await resp.json().catch(()=>null);
+        if(j) return j;
+        const text = await resp.text();
+        return text;
+      }catch(e){
+        throw e;
       }
     }
 
-    // UI events
-    generateBtn.addEventListener('click', generateDevotional);
-    // allow Cmd/Ctrl+Enter in textarea to generate
-    verseEl.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generateDevotional();
-    });
+    async function generate(){
+      const verse = verseEl.value.trim();
+      const tone = toneEl.value;
+      const length = lengthEl.value;
+      preview.textContent = '';
+      preview.innerHTML = 'Gerando...';
 
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(preview.textContent || '').then(() => {
-        alert('Copiado para a área de transferência.');
-      }).catch(() => { alert('Falha ao copiar.'); });
-    });
+      const payload = { action:'generate_devotional', verse, tone, length };
 
-    downloadBtn.addEventListener('click', () => {
-      const text = preview.textContent || '';
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'devocional.txt';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
+      try{
+        const data = await callBackend(payload);
+        let text = null;
+        if(typeof data === 'string') text = data;
+        else if(data?.choices?.[0]?.message?.content) text = data.choices[0].message.content;
+        else if(typeof data.text === 'string') text = data.text;
+        else if(typeof data.result === 'string') text = data.result;
+        else if(data?.content) text = data.content;
+        if(!text) text = JSON.stringify(data,null,2);
+        preview.textContent = text;
+        saveHistory(verse||('Devocional '+new Date().toLocaleString()), text, verse);
+      }catch(err){
+        const local = simpleLocalGenerate({verse,tone,length});
+        preview.textContent = `⚠️ Erro ao conectar ao servidor: ${err.message}\n\nVersão local gerada:\n\n${local}`;
+        saveHistory(verse||('Devocional local '+new Date().toLocaleString()), local, verse);
+      }
+    }
 
-    saveBtn.addEventListener('click', () => {
-      const text = preview.textContent || '';
-      if (!text) return alert('Nada a salvar.');
-      const title = prompt('Título curto para salvar (opcional):', (verseEl.value || '').slice(0,40)) || ('Devocional ' + new Date().toLocaleString());
-      saveToHistory(title, text, verseEl.value.trim());
+    btnGenerate.addEventListener('click', generate);
+    verseEl.addEventListener('keydown', (e)=>{ if((e.ctrlKey||e.metaKey) && e.key==='Enter') generate(); });
+    btnCopy.addEventListener('click', ()=>{ navigator.clipboard.writeText(preview.textContent||''); alert('Copiado!'); });
+    btnDownload.addEventListener('click', ()=>{
+      const blob = new Blob([preview.textContent||''],{type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='devocional.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+    btnSave.addEventListener('click', ()=>{
+      const text = preview.textContent||'';
+      if(!text) return alert('Nada para salvar');
+      const t = prompt('Título curto (opcional):', (verseEl.value||'').slice(0,40)) || ('Devocional '+new Date().toLocaleString());
+      saveHistory(t,text,verseEl.value.trim());
       alert('Salvo localmente.');
     });
+    btnClear.addEventListener('click', ()=>{ verseEl.value=''; preview.textContent='Seu devocional aparecerá aqui.'; });
 
-    clearBtn.addEventListener('click', () => {
-      verseEl.value = '';
-      preview.textContent = 'Seu devocional aparecerá aqui.';
+    startJourney.addEventListener('click', ()=>{
+      panelMain.scrollIntoView({behavior:'smooth'});
+      planSection.hidden = false;
+      window.scrollTo({top:document.querySelector('#plan-section').offsetTop-20,behavior:'smooth'});
+      updateSummary();
     });
 
-    // initial accessibility focus
-    preview.setAttribute('aria-live', 'polite');
+    qsa('input[name="theme"]').forEach(i=>i.addEventListener('change', updateSummary));
+    weeksInput.addEventListener('input', updateSummary);
+
+    function updateSummary(){
+      const theme = (qsa('input[name="theme"]:checked')[0]||{value:'Identidade em Cristo'}).value;
+      const weeks = Math.max(1, Math.min(12, parseInt(weeksInput.value||4)));
+      const studies = weeks;
+      const devos = weeks * 7;
+      summaryTheme.textContent = theme;
+      summaryDuration.textContent = `${weeks} semanas`;
+      summaryStudies.textContent = studies;
+      summaryDevos.textContent = devos;
+    }
+
+    btnBack.addEventListener('click', ()=>{
+      planSection.hidden = true;
+      panelMain.scrollIntoView({behavior:'smooth'});
+    });
+
+    startPlanBtn.addEventListener('click', async ()=>{
+      const theme = (qsa('input[name="theme"]:checked')[0]||{value:'Identidade em Cristo'}).value;
+      const weeks = Math.max(1, Math.min(12, parseInt(weeksInput.value||4)));
+      const payload = { action:'create_plan', theme, weeks };
+      try{
+        const data = await callBackend(payload);
+        const plan = {
+          theme,
+          weeks,
+          studies: weeks,
+          devos: weeks*7,
+          startedAt: new Date().toISOString(),
+          progress: { completedDevos:0, completedStudies:0 }
+        };
+        localStorage.setItem('plan_current', JSON.stringify(plan));
+        loadDashboardFromPlan(plan);
+        planSection.hidden = true;
+        dashboardSection.hidden = false;
+        window.scrollTo({top:document.querySelector('#dashboard-section').offsetTop-10,behavior:'smooth'});
+      }catch(err){
+        const plan = {
+          theme,
+          weeks,
+          studies: weeks,
+          devos: weeks*7,
+          startedAt: new Date().toISOString(),
+          progress: { completedDevos:0, completedStudies:0 }
+        };
+        localStorage.setItem('plan_current', JSON.stringify(plan));
+        loadDashboardFromPlan(plan);
+        planSection.hidden = true;
+        dashboardSection.hidden = false;
+        window.scrollTo({top:document.querySelector('#dashboard-section').offsetTop-10,behavior:'smooth'});
+      }
+    });
+
+    function loadDashboardFromPlan(plan){
+      statStudies.textContent = `${plan.studies}/${plan.studies}`;
+      statDevos.textContent = `${plan.progress.completedDevos}/${plan.devos}`;
+      statWeek.textContent = `Semana 1`;
+      statRemaining.textContent = `${plan.devos - plan.progress.completedDevos}`;
+      devocVerse.textContent = '—';
+      devocText.textContent = 'Nenhum devocional gerado ainda.';
+      devocDate.textContent = new Date().toLocaleDateString();
+      document.querySelector('.progress-bar > i').style.width = `${Math.round((plan.progress.completedDevos / plan.devos) * 100)}%`;
+    }
+
+    function tryLoadPlan(){
+      const p = JSON.parse(localStorage.getItem('plan_current')||'null');
+      if(p){
+        loadDashboardFromPlan(p);
+        dashboardSection.hidden = false;
+      }
+    }
+    tryLoadPlan();
+
+    btnReadFull.addEventListener('click', ()=>{
+      if(!preview.textContent || preview.textContent.includes('Nenhum')) return alert('Nenhum devocional disponível. Gere um devocional primeiro.');
+      alert(preview.textContent);
+    });
+
+    qs('#btnViewPlans').addEventListener('click', ()=>{ alert('Página de planos (em breve)'); });
+    qs('#btnAccessStudy').addEventListener('click', ()=>{ alert('Acessar estudo (em breve)'); });
+    qs('#btnAllStudies').addEventListener('click', ()=>{ alert('Ver todos os estudos (em breve)'); });
+
+    window.addEventListener('load', ()=>{ updateSummary(); });
   </script>
 </body>
 </html>
